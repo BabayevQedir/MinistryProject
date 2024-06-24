@@ -1,6 +1,11 @@
 package az.ministry.service;
+import az.ministry.model.Officer;
 import az.ministry.model.Pass;
+import az.ministry.model.Visitor;
+import az.ministry.model.dto.PassRequest;
+import az.ministry.repository.OfficerRepository;
 import az.ministry.repository.PassRepository;
+import az.ministry.repository.VisitorRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -11,6 +16,8 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class PassService {
     private final PassRepository passRepository;
+    private final VisitorRepository visitorRepository;
+    private final OfficerRepository officerRepository;
 
     public List<Pass> getAllPasses() {
         return passRepository.findAll();
@@ -20,26 +27,39 @@ public class PassService {
         return passRepository.findById(id);
     }
 
-    public Pass savePass(Pass pass) {
+    public Pass createPass(PassRequest passRequest) {
+
+        Visitor visitor = visitorRepository.findById(passRequest.getVisitorId())
+                .orElseThrow(() -> new IllegalArgumentException("Visitor not found"));
+        Officer officer = officerRepository.findById(passRequest.getOfficerId())
+                .orElseThrow(() -> new IllegalArgumentException("Officer not found"));
+
+        Pass pass = Pass.builder()
+                .accepted(passRequest.getABoolean())
+                .id(passRequest.getPassRequestId())
+                .visitor(visitor)
+                .officer(officer)
+                .entryTime(passRequest.getEntryTime())
+                .exitTime(passRequest.getExitTime())
+                .build();
+
         return passRepository.save(pass);
     }
 
-    public Pass updatePass(Long id, Pass newPass) {
-        return passRepository.findById(id)
-                .map(pass -> {
-                    pass.setEntryTime(newPass.getEntryTime());
-                    pass.setExitTime(newPass.getExitTime());
-                    pass.setHost(newPass.getHost());
-                    pass.setAccepted(newPass.isAccepted());
-                    return passRepository.save(pass);
-                })
-                .orElseGet(() -> {
-                    newPass.setId(id);
-                    return passRepository.save(newPass);
-                });
+
+    public Pass updatePass(Long id, Pass passDetails) {
+        Pass pass = passRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Pass not found"));
+
+        pass.setVisitor(passDetails.getVisitor());
+        pass.setOfficer(passDetails.getOfficer());
+        pass.setEntryTime(passDetails.getEntryTime());
+        pass.setExitTime(passDetails.getExitTime());
+
+        return passRepository.save(pass);
     }
 
     public void deletePass(Long id) {
-        passRepository.deleteById(id);
+        Pass pass = passRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Pass not found"));
+        passRepository.delete(pass);
     }
 }

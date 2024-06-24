@@ -1,7 +1,7 @@
 package az.ministry.service;
 
 import az.ministry.model.Officer;
-import az.ministry.repository.UserRepository;
+import az.ministry.repository.OfficerRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -10,36 +10,36 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-public class UserService {
-    private final UserRepository userRepository;
+public class OfficerService {
+    private final OfficerRepository officerRepository;
 
     public List<Officer> getAllUser() {
-        return userRepository.findAll();
+        return officerRepository.findAll();
     }
 
     public Optional<Officer> getUserById(Long id) {
-        return userRepository.findById(id);
+        return officerRepository.findById(id);
     }
 
     public Officer saveUser(Officer officer) {
-        return userRepository.save(officer);
+        return officerRepository.save(officer);
     }
 
     public Officer updateUser(Long id, Officer newOfficer) {
-        return userRepository.findById(id)
+        return officerRepository.findById(id)
                 .map(officer -> {
                     officer.setName(newOfficer.getName());
                     officer.setSurname(newOfficer.getSurname());
-                    return userRepository.save(newOfficer);
+                    return officerRepository.save(newOfficer);
                 })
                 .orElseGet(() -> {
                     newOfficer.setId(id);
-                    return userRepository.save(newOfficer);
+                    return officerRepository.save(newOfficer);
                 });
     }
 
     public void deleteUser(Long id) {
-        userRepository.deleteById(id);
+        officerRepository.deleteById(id);
 
     }
 }

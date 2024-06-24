@@ -1,9 +1,11 @@
 package az.ministry.controller;
 import az.ministry.model.Pass;
+import az.ministry.model.dto.PassRequest;
 import az.ministry.service.PassService;
 import lombok.RequiredArgsConstructor;
 
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -14,29 +16,33 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class PassController {
     private final PassService passService;
-
     @GetMapping
-    public List<Pass> getAllPass(){
+    public List<Pass> getAllPasses() {
         return passService.getAllPasses();
     }
 
     @GetMapping("/{id}")
-    public Optional<Pass> getPass(@PathVariable Long id){
-        return passService.getPassById(id);
+    public ResponseEntity<Pass> getPassById(@PathVariable Long id) {
+        Pass pass = passService.getPassById(id).orElseThrow(() -> new IllegalArgumentException("Pass not found"));
+        return ResponseEntity.ok(pass);
     }
-    @DeleteMapping("/{id}")
-    public void deletePass(@PathVariable Long id){
-        passService.deletePass(id);
-    }
+
     @PostMapping
-    public Pass createPass(@RequestBody Pass pass){
-        return passService.savePass(pass);
+    public ResponseEntity<Pass> createPass(@RequestBody PassRequest passRequest) {
+        Pass createdPass = passService.createPass(passRequest);
+        return ResponseEntity.ok(createdPass);
     }
+
     @PutMapping("/{id}")
-    public Pass updatePass(@PathVariable Long id, @RequestBody Pass pass) {
-        return passService.updatePass(id, pass);
+    public ResponseEntity<Pass> updatePass(@PathVariable Long id, @RequestBody Pass passDetails) {
+        Pass updatedPass = passService.updatePass(id, passDetails);
+        return ResponseEntity.ok(updatedPass);
     }
 
-
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deletePass(@PathVariable Long id) {
+        passService.deletePass(id);
+        return ResponseEntity.noContent().build();
+    }
 
 }

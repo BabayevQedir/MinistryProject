@@ -18,9 +18,4 @@ public class Officer {
     Long id;
     String name;
     String surname;
-
-    @OneToOne
-    @MapsId
-    @JoinColumn(name = "id")
-    Visitor visitor;
 }

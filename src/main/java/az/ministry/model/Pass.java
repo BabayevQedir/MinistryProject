@@ -22,13 +22,12 @@ public class Pass {
     @JoinColumn(name = "visitor_id", nullable = false)
     Visitor visitor;
 
+    @ManyToOne
+    @JoinColumn(name = "officer_id", nullable = false)
+    Officer officer;
+
     LocalDateTime entryTime;
     LocalDateTime exitTime;
 
-    @ManyToOne
-    @JoinColumn(name = "host_id",nullable = false)
-    Officer officer;
-
-    boolean accepted;
-
+    Boolean accepted;
 }

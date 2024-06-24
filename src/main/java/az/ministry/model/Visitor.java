@@ -1,8 +1,10 @@
 package az.ministry.model;
 
 import jakarta.persistence.*;
-import lombok.*;
-import lombok.experimental.FieldDefaults;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.experimental.FieldNameConstants;
 
 @Data
@@ -21,8 +23,5 @@ public class Visitor {
     String surname;
     String contactDetails;
 
-    @OneToOne(cascade = CascadeType.ALL,mappedBy = "customer")
-    @PrimaryKeyJoinColumn
-    Officer officer;
 
 }

@@ -1,6 +1,6 @@
 package az.ministry.controller;
 import az.ministry.model.Officer;
-import az.ministry.service.UserService;
+import az.ministry.service.OfficerService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.repository.query.Param;
 import org.springframework.web.bind.annotation.*;
@@ -11,28 +11,28 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/api/users")
 @RequiredArgsConstructor
-public class UserController {
-    private final UserService userService;
+public class OfficerController {
+    private final OfficerService officerService;
 
     @GetMapping
     public List<Officer> getAllUsers(){
-        return userService.getAllUser();
+        return officerService.getAllUser();
     }
 
     @GetMapping("/id")
     public Optional<Officer> getUser(@Param("id")Long id){
-        return userService.getUserById(id);
+        return officerService.getUserById(id);
     }
     @PostMapping()
     public Officer saveUser(@RequestBody Officer officer){
-        return userService.saveUser(officer);
+        return officerService.saveUser(officer);
     }
     @DeleteMapping("/{id}")
     public void deleteUser(@PathVariable Long id){
-        userService.deleteUser(id);
+        officerService.deleteUser(id);
     }
     @PutMapping("/{id}")
     public Officer updateUser(@PathVariable Long id, @RequestBody Officer officer){
-        return userService.updateUser(id, officer);
+        return officerService.updateUser(id, officer);
     }
 }
